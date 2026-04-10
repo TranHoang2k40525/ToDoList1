@@ -5,7 +5,7 @@ using HoangRESTFul.DTO;
 using System.Security.Claims;
 using HoangRESTFul.Data;
 
-namespace HoangRESTFul.Data
+namespace HoangRESTFul.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
