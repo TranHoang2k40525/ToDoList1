@@ -18,7 +18,8 @@ class TodoPage extends ConsumerStatefulWidget {
   ConsumerState<TodoPage> createState() => _TodoPageState();
 }
 
-class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderStateMixin {
+class _TodoPageState extends ConsumerState<TodoPage>
+    with SingleTickerProviderStateMixin {
   static const List<_CategoryIconOption> _iconOptions = [
     _CategoryIconOption('work', Icons.work_outline_rounded),
     _CategoryIconOption('home', Icons.home_outlined),
@@ -110,7 +111,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
       isCompleted: _isCompleted,
       priority: _priority,
       categoryId: _categoryId,
-      keyword: _keywordCtrl.text.trim().isEmpty ? null : _keywordCtrl.text.trim(),
+      keyword: _keywordCtrl.text.trim().isEmpty
+          ? null
+          : _keywordCtrl.text.trim(),
       dueFrom: _dueFrom,
       dueTo: _dueTo,
       sortBy: _sortBy,
@@ -186,13 +189,15 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                     const SizedBox(height: 10),
                     TextField(
                       controller: descCtrl,
-                      decoration: const InputDecoration(labelText: 'Description'),
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                      ),
                       minLines: 2,
                       maxLines: 4,
                     ),
                     const SizedBox(height: 10),
                     DropdownButtonFormField<int>(
-                      value: selectedPriority,
+                      initialValue: selectedPriority,
                       decoration: const InputDecoration(labelText: 'Priority'),
                       borderRadius: BorderRadius.circular(16),
                       menuMaxHeight: 260,
@@ -207,12 +212,15 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                     ),
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String?>(
-                      value: selectedCategoryId,
+                      initialValue: selectedCategoryId,
                       decoration: const InputDecoration(labelText: 'Category'),
                       borderRadius: BorderRadius.circular(16),
                       menuMaxHeight: 300,
                       items: [
-                        const DropdownMenuItem<String?>(value: null, child: Text('No category')),
+                        const DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text('No category'),
+                        ),
                         ...categories.map(
                           (cat) => DropdownMenuItem<String?>(
                             value: cat.id,
@@ -237,7 +245,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                       children: [
                         Expanded(
                           child: Text(
-                            due == null ? 'No due date' : 'Due: ${due!.toLocal().toString().split(' ').first}',
+                            due == null
+                                ? 'No due date'
+                                : 'Due: ${due!.toLocal().toString().split(' ').first}',
                           ),
                         ),
                         TextButton(
@@ -253,7 +263,7 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                             }
                           },
                           child: const Text('Pick date'),
-                        )
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -268,7 +278,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                         }
 
                         if (editing == null) {
-                          await ref.read(todoNotifierProvider.notifier).addTodo(
+                          await ref
+                              .read(todoNotifierProvider.notifier)
+                              .addTodo(
                                 title: title,
                                 description: desc,
                                 priority: selectedPriority,
@@ -276,7 +288,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                                 categoryId: selectedCategoryId,
                               );
                         } else {
-                          await ref.read(todoNotifierProvider.notifier).editTodo(
+                          await ref
+                              .read(todoNotifierProvider.notifier)
+                              .editTodo(
                                 id: editing.id,
                                 title: title,
                                 description: desc,
@@ -287,9 +301,10 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                               );
                         }
 
-                        if (mounted) {
-                          Navigator.of(sheetContext).pop();
+                        if (!sheetContext.mounted) {
+                          return;
                         }
+                        Navigator.of(sheetContext).pop();
                         await _search(page: 1);
                       },
                     ),
@@ -306,7 +321,8 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
   Future<void> _showCategoryForm({CategoryEntity? editing}) async {
     final nameCtrl = TextEditingController(text: editing?.name ?? '');
     String selectedIconKey = _normalizeIconKey(editing?.icon);
-    Color selectedColor = _parseHexColor(editing?.colorHex) ?? _presetColors.first;
+    Color selectedColor =
+        _parseHexColor(editing?.colorHex) ?? _presetColors.first;
 
     await showModalBottomSheet<void>(
       context: context,
@@ -335,7 +351,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                     const SizedBox(height: 12),
                     TextField(
                       controller: nameCtrl,
-                      decoration: const InputDecoration(labelText: 'Category name'),
+                      decoration: const InputDecoration(
+                        labelText: 'Category name',
+                      ),
                     ),
                     const SizedBox(height: 12),
                     const Text('Pick icon'),
@@ -344,11 +362,12 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                       height: 120,
                       child: GridView.builder(
                         itemCount: _iconOptions.length,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 6,
-                          mainAxisSpacing: 8,
-                          crossAxisSpacing: 8,
-                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 6,
+                              mainAxisSpacing: 8,
+                              crossAxisSpacing: 8,
+                            ),
                         itemBuilder: (context, index) {
                           final option = _iconOptions[index];
                           final selected = option.key == selectedIconKey;
@@ -371,7 +390,12 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                                   width: selected ? 1.8 : 1,
                                 ),
                               ),
-                              child: Icon(option.icon, color: selected ? selectedColor : Colors.blueGrey.shade700),
+                              child: Icon(
+                                option.icon,
+                                color: selected
+                                    ? selectedColor
+                                    : Colors.blueGrey.shade700,
+                              ),
                             ),
                           );
                         },
@@ -384,7 +408,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                         const Spacer(),
                         OutlinedButton.icon(
                           onPressed: () async {
-                            final picked = await _pickColorAdvanced(selectedColor);
+                            final picked = await _pickColorAdvanced(
+                              selectedColor,
+                            );
                             if (picked == null) {
                               return;
                             }
@@ -426,7 +452,11 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                               ],
                             ),
                             child: selected
-                                ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
+                                ? const Icon(
+                                    Icons.check_rounded,
+                                    size: 16,
+                                    color: Colors.white,
+                                  )
                                 : null,
                           ),
                         );
@@ -434,28 +464,43 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                     ),
                     const SizedBox(height: 12),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: selectedColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: selectedColor.withValues(alpha: 0.5)),
+                        border: Border.all(
+                          color: selectedColor.withValues(alpha: 0.5),
+                        ),
                       ),
                       child: Row(
                         children: [
                           CircleAvatar(
                             backgroundColor: selectedColor,
-                            child: Icon(_iconFromKey(selectedIconKey), color: Colors.white),
+                            child: Icon(
+                              _iconFromKey(selectedIconKey),
+                              color: Colors.white,
+                            ),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              nameCtrl.text.trim().isEmpty ? 'Category preview' : nameCtrl.text.trim(),
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                              nameCtrl.text.trim().isEmpty
+                                  ? 'Category preview'
+                                  : nameCtrl.text.trim(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                           Text(
                             _colorToHex(selectedColor),
-                            style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+                            style: TextStyle(
+                              color: Colors.blueGrey.shade700,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -471,13 +516,17 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                           }
 
                           if (editing == null) {
-                            await ref.read(todoNotifierProvider.notifier).addCategory(
+                            await ref
+                                .read(todoNotifierProvider.notifier)
+                                .addCategory(
                                   name: name,
                                   icon: selectedIconKey,
                                   colorHex: _colorToHex(selectedColor),
                                 );
                           } else {
-                            await ref.read(todoNotifierProvider.notifier).editCategory(
+                            await ref
+                                .read(todoNotifierProvider.notifier)
+                                .editCategory(
                                   id: editing.id,
                                   name: name,
                                   icon: selectedIconKey,
@@ -485,12 +534,17 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                                 );
                           }
 
-                          if (mounted) {
-                            Navigator.of(sheetContext).pop();
+                          if (!sheetContext.mounted) {
+                            return;
                           }
+                          Navigator.of(sheetContext).pop();
                         },
                         icon: const Icon(Icons.check_circle_outline_rounded),
-                        label: Text(editing == null ? 'Create category' : 'Update category'),
+                        label: Text(
+                          editing == null
+                              ? 'Create category'
+                              : 'Update category',
+                        ),
                       ),
                     ),
                   ],
@@ -562,7 +616,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
               Text('Priority: ${detail.priority}'),
               Text('Completed: ${detail.isCompleted ? 'Yes' : 'No'}'),
               Text('Category: ${detail.categoryName ?? 'No category'}'),
-              Text('Due: ${detail.dueDate?.toLocal().toString().split(' ').first ?? 'None'}'),
+              Text(
+                'Due: ${detail.dueDate?.toLocal().toString().split(' ').first ?? 'None'}',
+              ),
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -580,18 +636,21 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () async {
-                        await ref.read(todoNotifierProvider.notifier).toggle(detail.id);
-                        if (mounted) {
-                          Navigator.of(context).pop();
+                        await ref
+                            .read(todoNotifierProvider.notifier)
+                            .toggle(detail.id);
+                        if (!context.mounted) {
+                          return;
                         }
+                        Navigator.of(context).pop();
                         await _search();
                       },
                       icon: const Icon(Icons.refresh_rounded),
                       label: const Text('Toggle status'),
                     ),
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -740,7 +799,11 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
     );
   }
 
-  Widget _sectionTitle({required String title, String? subtitle, IconData? icon}) {
+  Widget _sectionTitle({
+    required String title,
+    String? subtitle,
+    IconData? icon,
+  }) {
     return Row(
       children: [
         if (icon != null) ...[
@@ -751,11 +814,20 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                ),
+              ),
               if (subtitle != null)
                 Text(
                   subtitle,
-                  style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+                  style: TextStyle(
+                    color: Colors.blueGrey.shade700,
+                    fontSize: 12,
+                  ),
                 ),
             ],
           ),
@@ -777,7 +849,10 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-            colors: [color.withValues(alpha: 0.23), Colors.white.withValues(alpha: 0.7)],
+            colors: [
+              color.withValues(alpha: 0.23),
+              Colors.white.withValues(alpha: 0.7),
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -788,8 +863,14 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
           children: [
             Icon(icon, color: color, size: 18),
             const SizedBox(height: 8),
-            Text(value, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
-            Text(label, style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12)),
+            Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+            ),
+            Text(
+              label,
+              style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12),
+            ),
           ],
         ),
       ),
@@ -801,7 +882,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
     required String label,
     required bool isActive,
   }) {
-    final baseColor = isActive ? const Color(0xFF2D9DF0) : const Color(0xFF8DBFDB);
+    final baseColor = isActive
+        ? const Color(0xFF2D9DF0)
+        : const Color(0xFF8DBFDB);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 260),
       curve: Curves.easeOutCubic,
@@ -812,7 +895,11 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: isActive
-              ? [const Color(0xFFEEFAFF), const Color(0xFFC9ECFF), const Color(0xFF99D9FF)]
+              ? [
+                  const Color(0xFFEEFAFF),
+                  const Color(0xFFC9ECFF),
+                  const Color(0xFF99D9FF),
+                ]
               : [Colors.white.withValues(alpha: 0.9), const Color(0xFFEAF6FF)],
         ),
         border: Border.all(
@@ -846,7 +933,9 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF90D6FF).withValues(alpha: isActive ? 0.6 : 0.35),
+                    color: const Color(
+                      0xFF90D6FF,
+                    ).withValues(alpha: isActive ? 0.6 : 0.35),
                     blurRadius: isActive ? 9 : 5,
                   ),
                 ],
@@ -856,13 +945,21 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 18, color: isActive ? const Color(0xFF0F4D77) : const Color(0xFF4D7C99)),
+              Icon(
+                icon,
+                size: 18,
+                color: isActive
+                    ? const Color(0xFF0F4D77)
+                    : const Color(0xFF4D7C99),
+              ),
               const SizedBox(width: 7),
               Text(
                 label,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
-                  color: isActive ? const Color(0xFF0F4D77) : const Color(0xFF4D7C99),
+                  color: isActive
+                      ? const Color(0xFF0F4D77)
+                      : const Color(0xFF4D7C99),
                 ),
               ),
             ],
@@ -897,608 +994,825 @@ class _TodoPageState extends ConsumerState<TodoPage> with SingleTickerProviderSt
           isScrollable: true,
           tabAlignment: TabAlignment.start,
           indicatorColor: Colors.transparent,
-          overlayColor: WidgetStateProperty.all(const Color(0xFF8DD9FF).withValues(alpha: 0.42)),
+          overlayColor: WidgetStateProperty.all(
+            const Color(0xFF8DD9FF).withValues(alpha: 0.42),
+          ),
           dividerColor: Colors.transparent,
           splashBorderRadius: BorderRadius.circular(24),
           onTap: (index) => setState(() => _activeTab = index),
           tabs: [
-            Tab(child: _waterTab(icon: Icons.water_drop_outlined, label: 'Dashboard', isActive: _activeTab == 0)),
-            Tab(child: _waterTab(icon: Icons.checklist_rounded, label: 'Todos', isActive: _activeTab == 1)),
-            Tab(child: _waterTab(icon: Icons.grid_view_rounded, label: 'Categories', isActive: _activeTab == 2)),
-            Tab(child: _waterTab(icon: Icons.person_rounded, label: 'Profile', isActive: _activeTab == 3)),
+            Tab(
+              child: _waterTab(
+                icon: Icons.water_drop_outlined,
+                label: 'Dashboard',
+                isActive: _activeTab == 0,
+              ),
+            ),
+            Tab(
+              child: _waterTab(
+                icon: Icons.checklist_rounded,
+                label: 'Todos',
+                isActive: _activeTab == 1,
+              ),
+            ),
+            Tab(
+              child: _waterTab(
+                icon: Icons.grid_view_rounded,
+                label: 'Categories',
+                isActive: _activeTab == 2,
+              ),
+            ),
+            Tab(
+              child: _waterTab(
+                icon: Icons.person_rounded,
+                label: 'Profile',
+                isActive: _activeTab == 3,
+              ),
+            ),
           ],
         ),
       ),
       body: _liquidBackground(
         child: TabBarView(
           controller: _tabController,
-            children: [
-              RefreshIndicator(
-                onRefresh: () => ref.read(todoNotifierProvider.notifier).loadInitial(),
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    _glassCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _sectionTitle(
-                            title: 'Live Overview',
-                            icon: Icons.insights_rounded,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              _metricCard(
-                                label: 'Total',
-                                value: '${todoState.stats?.total ?? 0}',
-                                color: const Color(0xFF2563EB),
-                                icon: Icons.layers_rounded,
-                              ),
-                              const SizedBox(width: 8),
-                              _metricCard(
-                                label: 'Done',
-                                value: '${todoState.stats?.completed ?? 0}',
-                                color: const Color(0xFF059669),
-                                icon: Icons.check_circle_rounded,
-                              ),
-                              const SizedBox(width: 8),
-                              _metricCard(
-                                label: 'Overdue',
-                                value: '${todoState.stats?.overdue ?? 0}',
-                                color: const Color(0xFFDC2626),
-                                icon: Icons.schedule_rounded,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 14),
-                          Builder(
-                            builder: (_) {
-                              final total = (todoState.stats?.total ?? 0).toDouble();
-                              final done = (todoState.stats?.completed ?? 0).toDouble();
-                              final progress =
-                                  total <= 0 ? 0.0 : (done / total).clamp(0, 1).toDouble();
-                              return Row(
-                                children: [
-                                  SizedBox(
-                                    width: 72,
-                                    height: 72,
-                                    child: Stack(
-                                      fit: StackFit.expand,
-                                      children: [
-                                        CircularProgressIndicator(
-                                          value: progress,
-                                          strokeWidth: 8,
-                                          backgroundColor: Colors.blueGrey.withValues(alpha: 0.16),
-                                        ),
-                                        Center(
-                                          child: Text(
-                                            '${(progress * 100).round()}%',
-                                            style: const TextStyle(fontWeight: FontWeight.w700),
+          children: [
+            RefreshIndicator(
+              onRefresh: () =>
+                  ref.read(todoNotifierProvider.notifier).loadInitial(),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  _glassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _sectionTitle(
+                          title: 'Live Overview',
+                          icon: Icons.insights_rounded,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            _metricCard(
+                              label: 'Total',
+                              value: '${todoState.stats?.total ?? 0}',
+                              color: const Color(0xFF2563EB),
+                              icon: Icons.layers_rounded,
+                            ),
+                            const SizedBox(width: 8),
+                            _metricCard(
+                              label: 'Done',
+                              value: '${todoState.stats?.completed ?? 0}',
+                              color: const Color(0xFF059669),
+                              icon: Icons.check_circle_rounded,
+                            ),
+                            const SizedBox(width: 8),
+                            _metricCard(
+                              label: 'Overdue',
+                              value: '${todoState.stats?.overdue ?? 0}',
+                              color: const Color(0xFFDC2626),
+                              icon: Icons.schedule_rounded,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        Builder(
+                          builder: (_) {
+                            final total = (todoState.stats?.total ?? 0)
+                                .toDouble();
+                            final done = (todoState.stats?.completed ?? 0)
+                                .toDouble();
+                            final progress = total <= 0
+                                ? 0.0
+                                : (done / total).clamp(0, 1).toDouble();
+                            return Row(
+                              children: [
+                                SizedBox(
+                                  width: 72,
+                                  height: 72,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      CircularProgressIndicator(
+                                        value: progress,
+                                        strokeWidth: 8,
+                                        backgroundColor: Colors.blueGrey
+                                            .withValues(alpha: 0.16),
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          '${(progress * 100).round()}%',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
                                           ),
-                                        )
-                                      ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: LinearProgressIndicator(
+                                    value: progress,
+                                    minHeight: 10,
+                                    borderRadius: BorderRadius.circular(999),
+                                    backgroundColor: Colors.blueGrey.withValues(
+                                      alpha: 0.18,
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: LinearProgressIndicator(
-                                      value: progress,
-                                      minHeight: 10,
-                                      borderRadius: BorderRadius.circular(999),
-                                      backgroundColor: Colors.blueGrey.withValues(alpha: 0.18),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  _glassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _sectionTitle(
+                          title: 'By Category',
+                          icon: Icons.category_outlined,
+                        ),
+                        const SizedBox(height: 10),
+                        if ((todoState.stats?.byCategory ?? const []).isEmpty)
+                          const Text('No category stats yet')
+                        else
+                          ...todoState.stats!.byCategory.map(
+                            (item) => Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Colors.white.withValues(alpha: 0.62),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.circle,
+                                      size: 9,
+                                      color: Color(0xFF3B82F6),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(child: Text(item.categoryName)),
+                                    Text(
+                                      '${item.count}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            RefreshIndicator(
+              onRefresh: () => _search(page: _page),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  _glassCard(
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _keywordCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Keyword',
+                            prefixIcon: Icon(Icons.search_rounded),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<bool?>(
+                                initialValue: _isCompleted,
+                                decoration: const InputDecoration(
+                                  labelText: 'Status',
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                menuMaxHeight: 220,
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: null,
+                                    child: Text('All'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: false,
+                                    child: Text('Open'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: true,
+                                    child: Text('Completed'),
+                                  ),
+                                ],
+                                onChanged: (value) =>
+                                    setState(() => _isCompleted = value),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: DropdownButtonFormField<int?>(
+                                initialValue: _priority,
+                                decoration: const InputDecoration(
+                                  labelText: 'Priority',
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                menuMaxHeight: 240,
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: null,
+                                    child: Text('All'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 0,
+                                    child: Text('Low'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 1,
+                                    child: Text('Medium'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 2,
+                                    child: Text('High'),
+                                  ),
+                                ],
+                                onChanged: (value) =>
+                                    setState(() => _priority = value),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<String?>(
+                                initialValue: _categoryId,
+                                decoration: const InputDecoration(
+                                  labelText: 'Category',
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                menuMaxHeight: 320,
+                                items: [
+                                  const DropdownMenuItem<String?>(
+                                    value: null,
+                                    child: Text('All'),
+                                  ),
+                                  ...todoState.categories.map(
+                                    (cat) => DropdownMenuItem<String?>(
+                                      value: cat.id,
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 11,
+                                            backgroundColor:
+                                                _parseHexColor(cat.colorHex) ??
+                                                Colors.blueGrey,
+                                            child: Icon(
+                                              _iconFromKey(cat.icon),
+                                              size: 13,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(cat.name),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    _glassCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _sectionTitle(
-                            title: 'By Category',
-                            icon: Icons.category_outlined,
-                          ),
-                          const SizedBox(height: 10),
-                          if ((todoState.stats?.byCategory ?? const []).isEmpty)
-                            const Text('No category stats yet')
-                          else
-                            ...todoState.stats!.byCategory.map(
-                              (item) => Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.white.withValues(alpha: 0.62),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.circle, size: 9, color: Color(0xFF3B82F6)),
-                                      const SizedBox(width: 8),
-                                      Expanded(child: Text(item.categoryName)),
-                                      Text(
-                                        '${item.count}',
-                                        style: const TextStyle(fontWeight: FontWeight.w700),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                onChanged: (value) =>
+                                    setState(() => _categoryId = value),
                               ),
-                            )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              RefreshIndicator(
-                onRefresh: () => _search(page: _page),
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    _glassCard(
-                      child: Column(
-                        children: [
-                          TextField(
-                            controller: _keywordCtrl,
-                            decoration: const InputDecoration(
-                              labelText: 'Keyword',
-                              prefixIcon: Icon(Icons.search_rounded),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: DropdownButtonFormField<bool?>(
-                                  value: _isCompleted,
-                                  decoration: const InputDecoration(labelText: 'Status'),
-                                  borderRadius: BorderRadius.circular(16),
-                                  menuMaxHeight: 220,
-                                  items: const [
-                                    DropdownMenuItem(value: null, child: Text('All')),
-                                    DropdownMenuItem(value: false, child: Text('Open')),
-                                    DropdownMenuItem(value: true, child: Text('Completed')),
-                                  ],
-                                  onChanged: (value) => setState(() => _isCompleted = value),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                initialValue: _sortBy,
+                                decoration: const InputDecoration(
+                                  labelText: 'Sort by',
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                menuMaxHeight: 260,
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: 'createdAt',
+                                    child: Text('Created'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'updatedAt',
+                                    child: Text('Updated'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'title',
+                                    child: Text('Title'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'priority',
+                                    child: Text('Priority'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'dueDate',
+                                    child: Text('Due Date'),
+                                  ),
+                                ],
+                                onChanged: (value) => setState(
+                                  () => _sortBy = value ?? 'createdAt',
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: DropdownButtonFormField<int?>(
-                                  value: _priority,
-                                  decoration: const InputDecoration(labelText: 'Priority'),
-                                  borderRadius: BorderRadius.circular(16),
-                                  menuMaxHeight: 240,
-                                  items: const [
-                                    DropdownMenuItem(value: null, child: Text('All')),
-                                    DropdownMenuItem(value: 0, child: Text('Low')),
-                                    DropdownMenuItem(value: 1, child: Text('Medium')),
-                                    DropdownMenuItem(value: 2, child: Text('High')),
-                                  ],
-                                  onChanged: (value) => setState(() => _priority = value),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () => _pickDate(forFrom: true),
+                                icon: const Icon(Icons.event_available_rounded),
+                                label: Text(
+                                  _dueFrom == null
+                                      ? 'Due from'
+                                      : _dueFrom!
+                                            .toLocal()
+                                            .toString()
+                                            .split(' ')
+                                            .first,
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: DropdownButtonFormField<String?>(
-                                  value: _categoryId,
-                                  decoration: const InputDecoration(labelText: 'Category'),
-                                  borderRadius: BorderRadius.circular(16),
-                                  menuMaxHeight: 320,
-                                  items: [
-                                    const DropdownMenuItem<String?>(value: null, child: Text('All')),
-                                    ...todoState.categories.map(
-                                      (cat) => DropdownMenuItem<String?>(
-                                        value: cat.id,
-                                        child: Row(
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () => _pickDate(forFrom: false),
+                                icon: const Icon(Icons.event_busy_rounded),
+                                label: Text(
+                                  _dueTo == null
+                                      ? 'Due to'
+                                      : _dueTo!
+                                            .toLocal()
+                                            .toString()
+                                            .split(' ')
+                                            .first,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SegmentedButton<String>(
+                                segments: const [
+                                  ButtonSegment(
+                                    value: 'desc',
+                                    label: Text('Desc'),
+                                  ),
+                                  ButtonSegment(
+                                    value: 'asc',
+                                    label: Text('Asc'),
+                                  ),
+                                ],
+                                selected: {_sortOrder},
+                                onSelectionChanged: (next) {
+                                  setState(() => _sortOrder = next.first);
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            ElevatedButton.icon(
+                              onPressed: () => _search(page: 1),
+                              icon: const Icon(Icons.filter_alt_rounded),
+                              label: const Text('Apply'),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton.icon(
+                              onPressed: () => _showTodoForm(),
+                              icon: const Icon(Icons.add_rounded),
+                              label: const Text('New'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 350),
+                    child: todoState.loading
+                        ? Column(
+                            key: const ValueKey('loading'),
+                            children: List.generate(
+                              3,
+                              (index) => Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                height: 78,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.5),
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Column(
+                            key: ValueKey('items-${items.length}'),
+                            children: items
+                                .map(
+                                  (todo) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: _glassCard(
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(18),
+                                        onTap: () => _showTodoDetail(todo),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            CircleAvatar(
-                                              radius: 11,
-                                              backgroundColor: _parseHexColor(cat.colorHex) ?? Colors.blueGrey,
-                                              child: Icon(
-                                                _iconFromKey(cat.icon),
-                                                size: 13,
-                                                color: Colors.white,
-                                              ),
+                                            Builder(
+                                              builder: (_) {
+                                                final category =
+                                                    categoriesById[todo
+                                                        .categoryId];
+                                                final categoryColor =
+                                                    _parseHexColor(
+                                                      category?.colorHex,
+                                                    ) ??
+                                                    Colors.blueGrey;
+                                                final categoryIcon =
+                                                    _iconFromKey(
+                                                      category?.icon,
+                                                    );
+                                                return Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 10,
+                                                      height: 10,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                            right: 8,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: categoryColor,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: categoryColor
+                                                                .withValues(
+                                                                  alpha: 0.55,
+                                                                ),
+                                                            blurRadius: 8,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Icon(
+                                                      categoryIcon,
+                                                      size: 16,
+                                                      color: categoryColor,
+                                                    ),
+                                                    const SizedBox(width: 6),
+                                                    Text(
+                                                      category?.name ??
+                                                          'No category',
+                                                      style: TextStyle(
+                                                        color: categoryColor,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             ),
-                                            const SizedBox(width: 8),
-                                            Text(cat.name),
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    todo.title,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    todo.isCompleted
+                                                        ? Icons
+                                                              .check_circle_rounded
+                                                        : Icons
+                                                              .radio_button_unchecked_rounded,
+                                                  ),
+                                                  onPressed: () async {
+                                                    await ref
+                                                        .read(
+                                                          todoNotifierProvider
+                                                              .notifier,
+                                                        )
+                                                        .toggle(todo.id);
+                                                    await _search();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                            Text(todo.description),
+                                            const SizedBox(height: 8),
+                                            Wrap(
+                                              spacing: 8,
+                                              runSpacing: 8,
+                                              children: [
+                                                Chip(
+                                                  avatar: Icon(
+                                                    _priorityFromLabel(
+                                                              todo.priority,
+                                                            ) ==
+                                                            2
+                                                        ? Icons
+                                                              .priority_high_rounded
+                                                        : _priorityFromLabel(
+                                                                todo.priority,
+                                                              ) ==
+                                                              1
+                                                        ? Icons.flag_outlined
+                                                        : Icons
+                                                              .keyboard_double_arrow_down_rounded,
+                                                    size: 16,
+                                                  ),
+                                                  label: Text(
+                                                    'Priority ${todo.priority}',
+                                                  ),
+                                                ),
+                                                Chip(
+                                                  label: Text(
+                                                    todo.dueDate == null
+                                                        ? 'No due date'
+                                                        : 'Due ${todo.dueDate!.toLocal().toString().split(' ').first}',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                TextButton.icon(
+                                                  onPressed: () =>
+                                                      _showTodoForm(
+                                                        editing: todo,
+                                                      ),
+                                                  icon: const Icon(
+                                                    Icons.edit_rounded,
+                                                  ),
+                                                  label: const Text('Edit'),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                TextButton.icon(
+                                                  onPressed: () async {
+                                                    await ref
+                                                        .read(
+                                                          todoNotifierProvider
+                                                              .notifier,
+                                                        )
+                                                        .remove(todo.id);
+                                                    await _search();
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.delete_rounded,
+                                                  ),
+                                                  label: const Text('Delete'),
+                                                ),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ),
-                                    )
-                                  ],
-                                  onChanged: (value) => setState(() => _categoryId = value),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: DropdownButtonFormField<String>(
-                                  value: _sortBy,
-                                  decoration: const InputDecoration(labelText: 'Sort by'),
-                                  borderRadius: BorderRadius.circular(16),
-                                  menuMaxHeight: 260,
-                                  items: const [
-                                    DropdownMenuItem(value: 'createdAt', child: Text('Created')),
-                                    DropdownMenuItem(value: 'updatedAt', child: Text('Updated')),
-                                    DropdownMenuItem(value: 'title', child: Text('Title')),
-                                    DropdownMenuItem(value: 'priority', child: Text('Priority')),
-                                    DropdownMenuItem(value: 'dueDate', child: Text('Due Date')),
-                                  ],
-                                  onChanged: (value) => setState(() => _sortBy = value ?? 'createdAt'),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: OutlinedButton.icon(
-                                  onPressed: () => _pickDate(forFrom: true),
-                                  icon: const Icon(Icons.event_available_rounded),
-                                  label: Text(
-                                    _dueFrom == null
-                                        ? 'Due from'
-                                        : _dueFrom!.toLocal().toString().split(' ').first,
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: OutlinedButton.icon(
-                                  onPressed: () => _pickDate(forFrom: false),
-                                  icon: const Icon(Icons.event_busy_rounded),
-                                  label: Text(
-                                    _dueTo == null ? 'Due to' : _dueTo!.toLocal().toString().split(' ').first,
-                                  ),
-                                ),
-                              ),
-                            ],
+                                )
+                                .toList(),
                           ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SegmentedButton<String>(
-                                  segments: const [
-                                    ButtonSegment(value: 'desc', label: Text('Desc')),
-                                    ButtonSegment(value: 'asc', label: Text('Asc')),
-                                  ],
-                                  selected: {_sortOrder},
-                                  onSelectionChanged: (next) {
-                                    setState(() => _sortOrder = next.first);
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              ElevatedButton.icon(
-                                onPressed: () => _search(page: 1),
-                                icon: const Icon(Icons.filter_alt_rounded),
-                                label: const Text('Apply'),
-                              ),
-                              const SizedBox(width: 8),
-                              ElevatedButton.icon(
-                                onPressed: () => _showTodoForm(),
-                                icon: const Icon(Icons.add_rounded),
-                                label: const Text('New'),
-                              ),
-                            ],
+                  ),
+                  const SizedBox(height: 8),
+                  _glassCard(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: (todoState.page?.page ?? 1) > 1
+                                ? () => _search(
+                                    page: (todoState.page?.page ?? 1) - 1,
+                                  )
+                                : null,
+                            icon: const Icon(Icons.chevron_left_rounded),
+                            label: const Text('Prev'),
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Page ${todoState.page?.page ?? 1}/${todoState.page?.totalPages ?? 1}',
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed:
+                                (todoState.page?.page ?? 1) <
+                                    (todoState.page?.totalPages ?? 1)
+                                ? () => _search(
+                                    page: (todoState.page?.page ?? 1) + 1,
+                                  )
+                                : null,
+                            icon: const Icon(Icons.chevron_right_rounded),
+                            label: const Text('Next'),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 350),
-                      child: todoState.loading
-                          ? Column(
-                              key: const ValueKey('loading'),
-                              children: List.generate(
-                                3,
-                                (index) => Container(
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  height: 78,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.5),
-                                    borderRadius: BorderRadius.circular(18),
-                                  ),
+                  ),
+                ],
+              ),
+            ),
+            RefreshIndicator(
+              onRefresh: () =>
+                  ref.read(todoNotifierProvider.notifier).loadCategories(),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  _glassCard(
+                    child: Row(
+                      children: [
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Manage Categories',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
                                 ),
                               ),
-                            )
-                          : Column(
-                              key: ValueKey('items-${items.length}'),
-                              children: items
-                                  .map(
-                                    (todo) => Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
-                                      child: _glassCard(
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.circular(18),
-                                          onTap: () => _showTodoDetail(todo),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Builder(
-                                                builder: (_) {
-                                                  final category = categoriesById[todo.categoryId];
-                                                  final categoryColor = _parseHexColor(category?.colorHex) ?? Colors.blueGrey;
-                                                  final categoryIcon = _iconFromKey(category?.icon);
-                                                  return Row(
-                                                    children: [
-                                                      Container(
-                                                        width: 10,
-                                                        height: 10,
-                                                        margin: const EdgeInsets.only(right: 8),
-                                                        decoration: BoxDecoration(
-                                                          shape: BoxShape.circle,
-                                                          color: categoryColor,
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: categoryColor.withValues(alpha: 0.55),
-                                                              blurRadius: 8,
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Icon(categoryIcon, size: 16, color: categoryColor),
-                                                      const SizedBox(width: 6),
-                                                      Text(
-                                                        category?.name ?? 'No category',
-                                                        style: TextStyle(color: categoryColor, fontWeight: FontWeight.w600),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      todo.title,
-                                                      style: const TextStyle(
-                                                        fontWeight: FontWeight.w700,
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  IconButton(
-                                                    icon: Icon(
-                                                      todo.isCompleted
-                                                          ? Icons.check_circle_rounded
-                                                          : Icons.radio_button_unchecked_rounded,
-                                                    ),
-                                                    onPressed: () async {
-                                                      await ref.read(todoNotifierProvider.notifier).toggle(todo.id);
-                                                      await _search();
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                              Text(todo.description),
-                                              const SizedBox(height: 8),
-                                              Wrap(
-                                                spacing: 8,
-                                                runSpacing: 8,
-                                                children: [
-                                                  Chip(
-                                                    avatar: Icon(
-                                                      _priorityFromLabel(todo.priority) == 2
-                                                          ? Icons.priority_high_rounded
-                                                          : _priorityFromLabel(todo.priority) == 1
-                                                              ? Icons.flag_outlined
-                                                              : Icons.keyboard_double_arrow_down_rounded,
-                                                      size: 16,
-                                                    ),
-                                                    label: Text('Priority ${todo.priority}'),
-                                                  ),
-                                                  Chip(
-                                                    label: Text(
-                                                      todo.dueDate == null
-                                                          ? 'No due date'
-                                                          : 'Due ${todo.dueDate!.toLocal().toString().split(' ').first}',
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Row(
-                                                children: [
-                                                  TextButton.icon(
-                                                    onPressed: () => _showTodoForm(editing: todo),
-                                                    icon: const Icon(Icons.edit_rounded),
-                                                    label: const Text('Edit'),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  TextButton.icon(
-                                                    onPressed: () async {
-                                                      await ref.read(todoNotifierProvider.notifier).remove(todo.id);
-                                                      await _search();
-                                                    },
-                                                    icon: const Icon(Icons.delete_rounded),
-                                                    label: const Text('Delete'),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () => _showCategoryForm(),
+                          icon: const Icon(Icons.add_rounded),
+                          label: const Text('Add'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ...todoState.categories.map(
+                    (category) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _glassCard(
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(18),
+                          onTap: () => _showCategoryForm(editing: category),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor:
+                                    _parseHexColor(category.colorHex) ??
+                                    Colors.blueGrey,
+                                child: Icon(
+                                  _iconFromKey(category.icon),
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      category.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16,
                                       ),
                                     ),
-                                  )
-                                  .toList(),
-                            ),
-                    ),
-                    const SizedBox(height: 8),
-                    _glassCard(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: (todoState.page?.page ?? 1) > 1
-                                  ? () => _search(page: (todoState.page?.page ?? 1) - 1)
-                                  : null,
-                              icon: const Icon(Icons.chevron_left_rounded),
-                              label: const Text('Prev'),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text('Page ${todoState.page?.page ?? 1}/${todoState.page?.totalPages ?? 1}'),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: (todoState.page?.page ?? 1) < (todoState.page?.totalPages ?? 1)
-                                  ? () => _search(page: (todoState.page?.page ?? 1) + 1)
-                                  : null,
-                              icon: const Icon(Icons.chevron_right_rounded),
-                              label: const Text('Next'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              RefreshIndicator(
-                onRefresh: () => ref.read(todoNotifierProvider.notifier).loadCategories(),
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    _glassCard(
-                      child: Row(
-                        children: [
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Manage Categories',
-                                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: () => _showCategoryForm(),
-                            icon: const Icon(Icons.add_rounded),
-                            label: const Text('Add'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ...todoState.categories.map(
-                      (category) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: _glassCard(
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(18),
-                            onTap: () => _showCategoryForm(editing: category),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: _parseHexColor(category.colorHex) ?? Colors.blueGrey,
-                                  child: Icon(_iconFromKey(category.icon), color: Colors.white),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        category.name,
-                                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      category.colorHex ?? '',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey.shade700,
+                                        fontSize: 12,
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(category.colorHex ?? '', style: TextStyle(color: Colors.blueGrey.shade700, fontSize: 12)),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                IconButton(
-                                  tooltip: 'Delete category',
-                                  onPressed: () async {
-                                    await ref.read(todoNotifierProvider.notifier).removeCategory(category.id);
-                                  },
-                                  icon: const Icon(Icons.delete_rounded),
-                                ),
-                              ],
-                            ),
+                              ),
+                              IconButton(
+                                tooltip: 'Delete category',
+                                onPressed: () async {
+                                  await ref
+                                      .read(todoNotifierProvider.notifier)
+                                      .removeCategory(category.id);
+                                },
+                                icon: const Icon(Icons.delete_rounded),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              RefreshIndicator(
-                onRefresh: () => ref.read(authNotifierProvider.notifier).refreshProfile(),
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    _glassCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            authState.profile?.fullName ?? authState.profile?.userName ?? 'Profile',
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            ),
+            RefreshIndicator(
+              onRefresh: () =>
+                  ref.read(authNotifierProvider.notifier).refreshProfile(),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  _glassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          authState.profile?.fullName ??
+                              authState.profile?.userName ??
+                              'Profile',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
                           ),
-                          const SizedBox(height: 8),
-                          Text('Username: ${authState.profile?.userName ?? ''}'),
-                          Text('Email: ${authState.profile?.email ?? ''}'),
-                          const SizedBox(height: 16),
-                          TextField(
-                            controller: _fullNameCtrl,
-                            decoration: const InputDecoration(labelText: 'Full name'),
+                        ),
+                        const SizedBox(height: 8),
+                        Text('Username: ${authState.profile?.userName ?? ''}'),
+                        Text('Email: ${authState.profile?.email ?? ''}'),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _fullNameCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Full name',
                           ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _avatarCtrl,
-                            decoration: const InputDecoration(labelText: 'Avatar URL'),
+                        ),
+                        const SizedBox(height: 10),
+                        TextField(
+                          controller: _avatarCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Avatar URL',
                           ),
-                          const SizedBox(height: 12),
-                          ElevatedButton.icon(
-                            onPressed: authState.loading
-                                ? null
-                                : () async {
-                                    final messenger = ScaffoldMessenger.of(context);
-                                    final ok = await ref.read(authNotifierProvider.notifier).updateProfile(
-                                          fullName: _fullNameCtrl.text.trim(),
-                                          avatarUrl: _avatarCtrl.text.trim(),
-                                        );
-                                    if (!mounted) {
-                                      return;
-                                    }
-                                    messenger.showSnackBar(
-                                      SnackBar(content: Text(ok ? 'Profile updated' : 'Update failed')),
-                                    );
-                                  },
-                            icon: const Icon(Icons.save_rounded),
-                            label: const Text('Save profile'),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton.icon(
+                          onPressed: authState.loading
+                              ? null
+                              : () async {
+                                  final messenger = ScaffoldMessenger.of(
+                                    context,
+                                  );
+                                  final ok = await ref
+                                      .read(authNotifierProvider.notifier)
+                                      .updateProfile(
+                                        fullName: _fullNameCtrl.text.trim(),
+                                        avatarUrl: _avatarCtrl.text.trim(),
+                                      );
+                                  if (!mounted) {
+                                    return;
+                                  }
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        ok
+                                            ? 'Profile updated'
+                                            : 'Update failed',
+                                      ),
+                                    ),
+                                  );
+                                },
+                          icon: const Icon(Icons.save_rounded),
+                          label: const Text('Save profile'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

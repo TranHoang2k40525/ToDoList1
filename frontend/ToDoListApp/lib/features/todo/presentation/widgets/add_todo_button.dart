@@ -38,12 +38,11 @@ class _AddTodoButtonState extends State<AddTodoButton> {
         _isAdded = true;
       });
     } finally {
-      if (!mounted) {
-        return;
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
       }
-      setState(() {
-        _isSubmitting = false;
-      });
     }
   }
 
@@ -52,8 +51,8 @@ class _AddTodoButtonState extends State<AddTodoButton> {
     final label = _isSubmitting
         ? 'Adding...'
         : _isAdded
-            ? widget.addedLabel
-            : widget.idleLabel;
+        ? widget.addedLabel
+        : widget.idleLabel;
 
     return ElevatedButton(
       key: const Key('add_todo_button'),
